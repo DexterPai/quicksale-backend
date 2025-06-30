@@ -22,7 +22,7 @@ public class WatsonController {
 	@Autowired
 	IWatsonService service;
 
-	@CrossOrigin(origins = "https://angularquicksale.web.app/")
+	@CrossOrigin
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		List<Watson> lista = service.listar();
@@ -31,7 +31,7 @@ public class WatsonController {
 					MensajeResponse.builder()
 							.mensaje("No hay registros")
 							.object(null)
-							.success(false) // Establecer success en false
+							.success(false)
 							.build(),
 					HttpStatus.OK
 			);
@@ -40,14 +40,14 @@ public class WatsonController {
 					MensajeResponse.builder()
 							.mensaje("")
 							.object(lista)
-							.success(true) // Establecer success en true
+							.success(true)
 							.build(),
 					HttpStatus.OK
 			);
 		}
 	}
 
-	@CrossOrigin(origins = "https://angularquicksale.web.app/")
+	@CrossOrigin
 	@GetMapping("/{id}")
 	public ResponseEntity<?> listarPorId(@PathVariable("id") Integer id) {
 		Watson watson = service.listarPorId(id);
@@ -80,7 +80,7 @@ public class WatsonController {
 		}
 	}
 
-	@CrossOrigin(origins = "https://angularquicksale.web.app/")
+	@CrossOrigin
 	@PostMapping
 	public ResponseEntity<?> registrar(@RequestBody WatsonDto c) {
 		Watson watson = null;
@@ -109,7 +109,7 @@ public class WatsonController {
 		}
 	}
 
-	@CrossOrigin(origins = "https://angularquicksale.web.app/")
+	@CrossOrigin
 	@PutMapping
 	public ResponseEntity<?> modificar(@RequestBody WatsonDto c) {
 		Watson watson = null;
@@ -138,7 +138,7 @@ public class WatsonController {
 		}
 	}
 
-	@CrossOrigin(origins = "https://angularquicksale.web.app/")
+	@CrossOrigin
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable("id")Integer id) {
 		try {

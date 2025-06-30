@@ -15,17 +15,10 @@ import java.util.List;
 public interface ISaleRepo extends JpaRepository<Sale, Integer> {
 
     @Query("SELECT e FROM Sale e WHERE e.saleDate BETWEEN :dateStart AND :dateFin ")
-     //List<Sale> findByDateRange(@Param("dateStart") Date dateStart, @Param("dateFin") Date dateFin);
     List<Sale> findByDateRange(@Param("dateStart") LocalDate dateStart, @Param("dateFin") LocalDate dateFin);
-
-
-    //@Query("select e from Sale e join fetch e.customer join fetch e.payment join fetch e.event")
-     //List<Sale> findFullObj();
-
 
     @Query("SELECT v FROM Sale v WHERE v.customer.email = :email")
     List<Sale> findSaleByEmailUser(@Param("email") String email);
-
 
 }
 

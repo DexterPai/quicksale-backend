@@ -36,12 +36,10 @@ public class Sale {
 	private int quantity;
 	private String status;
 	
-	//@ManyToOne(cascade = CascadeType.ALL)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_event", referencedColumnName = "idEvent")
 	private Event event;
 
-	//@OneToOne(cascade = CascadeType.ALL)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_customer", referencedColumnName = "idCustomer")
 	private Customer customer;

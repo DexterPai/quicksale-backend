@@ -14,6 +14,5 @@ public interface ICustomerRepo extends JpaRepository<Customer, Integer> {
     @Query("SELECT u FROM Customer u WHERE u.email = :email AND u.password = :password")
     Customer login(@Param("email") String email, @Param("password") String password);
 
-
     Customer findByEmail(String email);
 }

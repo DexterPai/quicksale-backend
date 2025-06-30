@@ -40,7 +40,6 @@ public class Event {
 	private double unitPrice;
 	private String status;
 	
-	//@ManyToOne(cascade = CascadeType.ALL)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_category", referencedColumnName = "idCategory")
 	private Category category;

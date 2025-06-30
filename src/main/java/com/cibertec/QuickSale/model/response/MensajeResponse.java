@@ -14,7 +14,7 @@ public class MensajeResponse implements Serializable {
 	private String mensaje;
 	private Object object;
 
-	private boolean success;// Agregar el campo success
+	private boolean success;
 
 
 	public boolean getSuccess() {
@@ -24,7 +24,6 @@ public class MensajeResponse implements Serializable {
 	public void setSuccess(boolean success) {
 		this.success = success;
 	}
-
 
 	public String getMensaje() {
 		return mensaje;

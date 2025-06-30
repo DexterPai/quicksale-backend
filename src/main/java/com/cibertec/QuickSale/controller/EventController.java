@@ -22,7 +22,7 @@ public class EventController {
     @Autowired
     IEventService service;
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @GetMapping
     public ResponseEntity<?> listar() {
         List<Event> lista = service.listar();
@@ -53,7 +53,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> listarPorId(@PathVariable("id") Integer id) {
         Event event = service.listarPorId(id);
@@ -91,7 +91,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @PostMapping
     public ResponseEntity<?> registrar(@RequestBody EventDto ev) {
         Event eventSave = null;
@@ -125,7 +125,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @PutMapping
     public ResponseEntity<?> modificar(@RequestBody EventDto ev) {
         Event eventUpdate = null;
@@ -159,7 +159,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable("id") Integer id) {
         try {
@@ -179,7 +179,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> cambiarEstadoAEliminado(@PathVariable("id") Integer id) {
         try {
@@ -203,7 +203,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @GetMapping("/find/{title}")
     public ResponseEntity<?> findEventByName(@PathVariable("title") String title) {
         List<Event> events = service.findEventByName(title);
@@ -231,7 +231,7 @@ public class EventController {
     }
 
 
-    @CrossOrigin(origins = "https://angularquicksale.web.app/")
+    @CrossOrigin
     @GetMapping("/filter/{idCategory}")
     public ResponseEntity<?> filterEventByCategory(@PathVariable("idCategory") Integer idCategory) {
         List<Event> event = service.filterEventByCategory(idCategory);
