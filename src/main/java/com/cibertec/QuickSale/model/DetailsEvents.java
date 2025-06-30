@@ -16,6 +16,7 @@ public class DetailsEvents {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idDetailsEvents;
 
+	@Column(length = 1000)
 	@NotEmpty
 	private String description;
 
