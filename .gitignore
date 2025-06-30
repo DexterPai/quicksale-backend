@@ -1,0 +1,40 @@
+# Build
+/target/
+
+# Logs
+*.log
+
+# IDEs
+/.idea/
+/*.iml
+*.iws
+*.ipr
+*.class
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven
+.mvn/
+
+# Gradle (si usas)
+.gradle/
+/build/
+
+# Test Reports
+/test-output/
+
+# Environments
+.env
+*.env
+
+# Otros
+*.swp
+*.bak
+*.tmp
