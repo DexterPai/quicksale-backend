@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.cibertec.QuickSale.model.*;
 import com.cibertec.QuickSale.model.dto.CustomerDto;
-import com.cibertec.QuickSale.model.response.ChangePasswordResponse;
+import com.cibertec.QuickSale.model.request.ChangePasswordRequest;
 import com.cibertec.QuickSale.model.response.CustomerResponse;
 import com.cibertec.QuickSale.model.response.MensajeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.cibertec.QuickSale.servic.ICustomerService;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("api/customer")
 public class CustomerController {
@@ -24,11 +26,12 @@ public class CustomerController {
 
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody CustomerDto customerDto) {
-        String email = customerDto.getEmail();
-        String password = customerDto.getPassword();
+    public ResponseEntity<?> login(@RequestBody CustomerDto customerDto,
+            HttpSession session) {
+    	 String email = customerDto.getEmail();
+    	    String password = customerDto.getPassword();
 
-        Customer authenticated = service.login(email, password);
+    	    Customer authenticated = service.login(email, password);
 
         if (email.equals("admin@hotmail.com") && password.equals("admin")) {
             return new ResponseEntity<>(
@@ -42,10 +45,13 @@ public class CustomerController {
                     HttpStatus.OK);
         }
 
-        if (authenticated != null && authenticated.getPassword().equals(customerDto.getPassword())) {
+        if (authenticated != null) {
+            // ① Guardamos el correo en la sesión HTTP
+            session.setAttribute("email", authenticated.getEmail());
+
             return new ResponseEntity<>(
                     CustomerResponse.builder()
-                            .mensaje("Inicio de sesion Exitoso")
+                            .mensaje("Inicio de sesión exitoso")
                             .id(authenticated.getIdCustomer())
                             .name(authenticated.getFullName())
                             .roles(authenticated.getRoles())
@@ -58,41 +64,51 @@ public class CustomerController {
                             .mensaje("Credenciales Incorrectas")
                             .name("")
                             .roles("")
-                            .success(true)
+                            .success(false)
                             .build(),
-                    HttpStatus.OK);
+                    HttpStatus.UNAUTHORIZED);
         }
-
     }
 
 
 
     @CrossOrigin
     @PutMapping("/changePassword")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordResponse changePasswordResponse) {
+    public ResponseEntity<?> changePassword(HttpSession session,
+            @RequestBody ChangePasswordRequest request) {
 
+        // ② Recuperamos el correo desde la sesión
+        String email = (String) session.getAttribute("email");
 
-        if(service.changePassword(changePasswordResponse.getEmail(), changePasswordResponse.getCurrentPassword(), changePasswordResponse.getNewPassword())){
+        if (email == null) {
+            return new ResponseEntity<>(
+                    MensajeResponse.builder()
+                            .mensaje("Sesión expirada o no iniciada")
+                            .success(false)
+                            .build(),
+                    HttpStatus.UNAUTHORIZED);
+        }
+
+        // ③ Llamamos al servicio con los datos recuperados
+        boolean ok = service.changePassword(email,
+                                            request.getCurrentPassword(),
+                                            request.getNewPassword());
+
+        if (ok) {
             return new ResponseEntity<>(
                     MensajeResponse.builder()
                             .mensaje("Contraseña cambiada con éxito")
-                            .object(null)
                             .success(true)
                             .build(),
-                    HttpStatus.OK
-            );
-        }else{
+                    HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(
                     MensajeResponse.builder()
-                            .mensaje("Error verifica los datos proporcionados")
-                            .object(null)
+                            .mensaje("La contraseña actual no coincide")
                             .success(false)
                             .build(),
-                    HttpStatus.BAD_REQUEST
-            );
-
+                    HttpStatus.BAD_REQUEST);
         }
-
     }
 
 
@@ -195,7 +211,7 @@ public class CustomerController {
     public ResponseEntity<?> modificar(@RequestBody CustomerDto cu) {
         Customer customerUpdate = null;
         try {
-            customerUpdate = service.registrar(cu);
+        	customerUpdate = service.modificar(cu);
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("Actualizado Correctamente")
                     .object(CustomerDto.builder()

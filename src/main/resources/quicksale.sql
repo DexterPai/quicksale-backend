@@ -68,7 +68,9 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (1,20,'876543details_events21','admin@cibertec.edu.pe','Admin','Password1@','admin','Activo'),(2,20,'78654362','renato@cibertec.edu.pe','Renato Alvarez Torres','Alvarez1@','User','Activo'),(3,30,'87656473','maria@cibertec.edu.pe','Maria Lopez Rodriguez','Rodriguez1@','User','Activo');
+INSERT INTO `customer` VALUES (1,20,'87654321','admin@cibertec.edu.pe','Admin','$2a$10$CpOIoeRLwH5Y6DtNl24Ia.Eb4Wk3d5M.He2NwoA5RJHTKnyodZoRa','admin','Activo'),
+(2,20,'78654362','renato@cibertec.edu.pe','Renato Alvarez Torres','$2a$10$BowbwXED1zGszerUFHad/Op2D.3tzOz9BQbMUMPvjVXJ18h/qLUcO','User','Activo'),
+(3,30,'87656473','maria@cibertec.edu.pe','Maria Lopez Rodriguez','$2a$10$vhzpwD8zdQtUJOOQerG9UuepnbgGSOFBrDY4qgZY25y5egVwELOQ2','User','Activo');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 

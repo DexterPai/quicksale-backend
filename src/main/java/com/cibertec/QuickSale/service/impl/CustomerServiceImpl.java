@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.cibertec.QuickSale.model.dto.CustomerDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cibertec.QuickSale.model.Customer;
@@ -16,38 +17,53 @@ public class CustomerServiceImpl implements ICustomerService {
 
 	@Autowired
 	ICustomerRepo repo;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 	@Override
-	public Customer registrar(CustomerDto cu) {
-		Customer customer = Customer.builder()
-				.idCustomer(cu.getIdCustomer())
-				.fullName(cu.getFullName())
-				.dni(cu.getDni())
-				.age(cu.getAge())
-				.email(cu.getEmail())
-				.password(cu.getPassword())
-				.roles(cu.getRoles())
-				.status(cu.getStatus())
-				.build();
+    public Customer registrar(CustomerDto cu) {
+        // Encriptar la contraseña antes de guardar
+        String encryptedPassword = passwordEncoder.encode(cu.getPassword());
+        
+        Customer customer = Customer.builder()
+                .idCustomer(cu.getIdCustomer())
+                .fullName(cu.getFullName())
+                .dni(cu.getDni())
+                .age(cu.getAge())
+                .email(cu.getEmail())
+                .password(encryptedPassword) // Usar la contraseña encriptada
+                .roles(cu.getRoles())
+                .status(cu.getStatus())
+                .build();
 
-		return repo.save(customer);
-	}
+        return repo.save(customer);
+    }
 
-	@Override
-	public Customer modificar(CustomerDto cu) {
-		Customer customer = Customer.builder()
-				.idCustomer(cu.getIdCustomer())
-				.fullName(cu.getFullName())
-				.dni(cu.getDni())
-				.age(cu.getAge())
-				.email(cu.getEmail())
-				.password(cu.getPassword())
-				.roles(cu.getRoles())
-				.status(cu.getStatus())
-				.build();
+	 @Override
+	    public Customer modificar(CustomerDto cu) {
+	        // Obtener el cliente existente para mantener la misma contraseña si no se cambió
+	        Customer existingCustomer = repo.findById(cu.getIdCustomer()).orElse(null);
+	        String password = cu.getPassword();
+	        
+	        // Solo encriptar si la contraseña es nueva (no es igual a la existente)
+	        if(existingCustomer != null && !passwordEncoder.matches(password, existingCustomer.getPassword())) {
+	            password = passwordEncoder.encode(password);
+	        }
+	        
+	        Customer customer = Customer.builder()
+	                .idCustomer(cu.getIdCustomer())
+	                .fullName(cu.getFullName())
+	                .dni(cu.getDni())
+	                .age(cu.getAge())
+	                .email(cu.getEmail())
+	                .password(password)
+	                .roles(cu.getRoles())
+	                .status(cu.getStatus())
+	                .build();
 
-		return repo.save(customer);
-	}
+	        return repo.save(customer);
+	    }
 
 	@Override
 	public List<Customer> listar() {
@@ -76,27 +92,32 @@ public class CustomerServiceImpl implements ICustomerService {
 	}
 
 	@Override
-	public Customer login(String email, String password) {
-		return repo.login(email,password);
-	}
+    public Customer login(String email, String password) {
+        Customer customer = repo.findByEmail(email);
+        if(customer != null && passwordEncoder.matches(password, customer.getPassword())) {
+            return customer;
+        }
+        return null;
+    }
 
 	@Override
 	public Customer findByEmail(String email) {
 		return repo.findByEmail(email);
 	}
 
-	@Override
-	public boolean changePassword(String email, String password, String nuevaContraseña) {
-		Customer customer = repo.findByEmail(email);
+	 @Override
+	    public boolean changePassword(String email, String currentPassword, String newPassword) {
+	        Customer customer = repo.findByEmail(email);
 
-		if (customer != null && customer.getPassword().equals(password)) {
-			customer.setPassword(nuevaContraseña);
-			repo.save(customer);
-			return true;
-		} else {
-			return false;
-		}
-	}
+	        if (customer != null && passwordEncoder.matches(currentPassword, customer.getPassword())) {
+	            String encryptedNewPassword = passwordEncoder.encode(newPassword);
+	            customer.setPassword(encryptedNewPassword);
+	            repo.save(customer);
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    }
 
 
 }
